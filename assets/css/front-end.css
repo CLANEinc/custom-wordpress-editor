@@ -1,0 +1,43 @@
+
+.accordion__head {
+  background-color: lightgray;
+  padding: 16px;
+  padding-right: 48px;
+  position: relative;
+}
+
+.accordion__head:hover {
+  cursor: pointer;
+  transition: .3s;
+  opacity: .8;
+}
+
+.accordion__head::before,
+.accordion__head::after {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  content: '';
+  width: 24px;
+  height: 1px;
+  border-radius: 10px;
+  background-color: black;
+  transition: .3s;
+}
+
+.accordion__head::after {
+  transform: rotate(90deg);
+}
+
+.accordion__head.-active::after {
+  transform: rotate(0deg);
+  transition: .3s;
+
+}
+
+
+.accordion__body {
+  padding: 16px;
+  border: 1px solid lightgray;
+  display: none;
+}

@@ -1,0 +1,9 @@
+
+.accordion__head {
+  background-color: lightgray;
+  padding: 16px;
+}
+.accordion__body {
+  padding: 16px;
+  border: 1px solid lightgray;
+}
