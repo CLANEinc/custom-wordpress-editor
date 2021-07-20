@@ -2,7 +2,7 @@
 /*
   Plugin Name: custom wordpress editor
   Description: Wordpressのエディタに機能を追加する
-  Version: 1.0.1
+  Version: 1.0.3
   Author: Shota Kawakatsu
   Author URI:https://github.com/CLANEinc/custom-wordpress-editor
   License: GPLv2
