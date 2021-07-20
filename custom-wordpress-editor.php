@@ -2,54 +2,62 @@
 /*
   Plugin Name: custom wordpress editor
   Description: Wordpressのエディタに機能を追加する
-  Version: 1.0.0
+  Version: 1.0.1
   Author: Shota Kawakatsu
+  Author URI:https://github.com/CLANEinc/custom-wordpress-editor
+  License: GPLv2
  */
 
-require_once 'scssphp.php';
+ require_once dirname(__FILE__).'/vendor/autoload.php';
+
+add_action('init', 'activate_autoupdate');
+
+function activate_autoupdate()
+{
+    $plugin_slug = plugin_basename(__FILE__); // e.g. `hello/hello.php`.
+    $gh_user = 'CLANEinc';                      // The user name of GitHub.
+    $gh_repo = 'custom-wordpress-editor';       // The repository name of your plugin.
+
+    // Activate automatic update.
+    new Miya\WP\GH_Auto_Updater($plugin_slug, $gh_user, $gh_repo);
+}
 
 
- if (is_admin()) {
-     ?>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script src="<?php echo plugins_url('/assets/js/custom-wordpress-editor.js', __FILE__); ?>"></script>
+// ---------- 管理画面のみ ----------
+if (is_admin()) {
+  // ---------- jsファイル読み込み ----------
+  wp_enqueue_script('custom-wordpress-editor', plugins_url('/assets/js/custom-wordpress-editor.js', __FILE__), [], '1.0.0', true);
 
-<?php
+}
 
 
-// 作成したプラグインを登録
+// ---------- 作成したプラグインを登録 ----------
 add_filter('mce_external_plugins', function ($plugin_array) {
     $plugin_array['original_tinymce_button_plugin'] = plugins_url('/assets/js/custom-wordpress-editor.js', __FILE__);
 
     return $plugin_array;
 });
-// プラグインで作ったボタンを登録
+
+// ---------- プラグインで作ったボタンを登録 ----------
 add_filter('mce_buttons', function ($buttons) {
     $buttons[] = 'insert_template';
 
     return $buttons;
 });
 
- }
-
 // ---------- エディタースタイルを読み込ませる ----------
 add_action('admin_init', function () {
-add_editor_style(plugins_url('/style.css', __FILE__));
+    add_editor_style(plugins_url('/style.css', __FILE__));
 });
 
 
-// ---------- the_contentをフックにしてjsファイルを読み込ませる ----------
+// JS・CSSファイルを読み込む
+function add_files()
+{
+    // サイト共通JS
+    wp_enqueue_script('front-endscript', plugins_url('/assets/js/front-end.js', __FILE__), ['jquery'], '', true);
 
-
-// ---------- the_contentをフックにしてjsファイルを読み込ませる ----------
-add_filter('the_content', function () { ?>
-<link rel="stylesheet" type="text/css" href="<?php echo plugins_url('/assets/css/front-end.css', __FILE__); ?>">
-<?php
-});
-
-// ---------- the_contentをフックにしてjsファイルを読み込ませる ----------
-add_filter('the_content', function () { ?>
-
-<script src="<?php echo plugins_url('/assets/js/front-end.js', __FILE__); ?>"></script>
-<?php
-});
+    // サイト共通のCSSの読み込み
+    wp_enqueue_style('front-end', plugins_url('/assets/css/front-end.css', __FILE__), '', '20160608');
+}
+add_action('wp_enqueue_scripts', 'add_files');
